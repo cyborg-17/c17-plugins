@@ -163,7 +163,7 @@ public class HerbCleanerPlugin extends Plugin {
 		bankerID = config.bankerID();
 		opCODE = config.opCODE();
 		grimyherbID = config.grimyherbID();
-		cleanherbIDS.addAll(utils.stringToIntList("261,265,267,249,255,259,263,2481,201,257"));
+		cleanherbIDS.addAll(utils.stringToIntList("249,251,253,255,257,2998,259,261,263,3000,265,2481,267,269"));
 		busy_cleaning = false;
 	}
 
