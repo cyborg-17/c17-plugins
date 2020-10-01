@@ -51,7 +51,7 @@ public interface VarrockSmitherConfig extends Config
 	)
 	default String instructions()
 	{
-		return "Bronz bar ID: 2394\nIron bar ID: 2351\nSteel bar ID: 2353\nMithril bar ID: 2359\nAdamant bar ID: 2361\nRune bar ID: 2363"
+		return "Bronz bar ID: 2349\nIron bar ID: 2351\nSteel bar ID: 2353\nMithril bar ID: 2359\nAdamant bar ID: 2361\nRune bar ID: 2363"
 		;
 	}
 

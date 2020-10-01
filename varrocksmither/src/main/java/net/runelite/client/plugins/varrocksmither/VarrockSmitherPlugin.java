@@ -312,7 +312,7 @@ public class VarrockSmitherPlugin extends Plugin {
 			return HANDLE_BREAK;
 		}
 		if (!utils.isBankOpen() && can_smith && (client.getLocalPlayer().getWorldLocation().getX() == (3185) &&
-				(client.getLocalPlayer().getWorldLocation().getY() == (3436))))
+				(client.getLocalPlayer().getWorldLocation().getY() == (3436) && utils.getInventoryItemCount(barID, false) == 27)))
 		{
 			return SMITHING;
 		}
@@ -396,11 +396,11 @@ public class VarrockSmitherPlugin extends Plugin {
 					timeout = 0 + tickDelay();
 					break;
 				case OUT_OF_BARS:
-					startVarrockSmither = false;
 					if (config.logout())
 					{
 						utils.logout();
 					}
+					startVarrockSmither = false;
 					resetVals();
 					break;
 				case HANDLE_BREAK:
