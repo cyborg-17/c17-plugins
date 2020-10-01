@@ -149,7 +149,7 @@ public class HerbCleanerPlugin extends Plugin {
 					overlayManager.add(overlay);
 					bankerID = config.bankerID();
 					grimyherbID = config.grimyherbID();
-					cleanherbIDS.addAll(utils.stringToIntList("261,265,267,249,255,259,263,2481,201,257"));
+					cleanherbIDS.addAll(utils.stringToIntList(",265,267,249,255,259,263,2481,201,257,253,2998"));
 					busy_cleaning = false;
 				} else {
 					resetVals();
