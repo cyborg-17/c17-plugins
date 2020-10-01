@@ -38,6 +38,7 @@ Varrock Smither:
 Need a hammer in Inventory and bars in bank. Stay close to the banker thats near the anvil.
 If bank is out of bars, plugin will stop.
 
+
 My plugins work with Owain's chinbreakhandler and illumineawake Botutils.
 
 

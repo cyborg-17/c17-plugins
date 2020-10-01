@@ -149,7 +149,7 @@ public class HerbCleanerPlugin extends Plugin {
 					overlayManager.add(overlay);
 					bankerID = config.bankerID();
 					grimyherbID = config.grimyherbID();
-					cleanherbIDS.addAll(utils.stringToIntList(",265,267,249,255,259,263,2481,201,257,253,2998"));
+					cleanherbIDS.addAll(utils.stringToIntList(ItemID.GUAM_LEAF + "," + ItemID.MARRENTILL + "," + ItemID.TARROMIN + "," + ItemID.HARRALANDER + "," + ItemID.RANARR_WEED + "," + ItemID.TOADFLAX + "," + ItemID.IRIT_LEAF + "," + ItemID.AVANTOE + "," + ItemID.KWUARM + "," + ItemID.SNAPDRAGON + "," + ItemID.CADANTINE + "," + ItemID.LANTADYME + "," + ItemID.DWARF_WEED + "," + ItemID.TORSO));
 					busy_cleaning = false;
 				} else {
 					resetVals();
@@ -163,7 +163,7 @@ public class HerbCleanerPlugin extends Plugin {
 		bankerID = config.bankerID();
 		opCODE = config.opCODE();
 		grimyherbID = config.grimyherbID();
-		cleanherbIDS.addAll(utils.stringToIntList("249,251,253,255,257,2998,259,261,263,3000,265,2481,267,269"));
+		cleanherbIDS.addAll(utils.stringToIntList(ItemID.GUAM_LEAF + "," + ItemID.MARRENTILL + "," + ItemID.TARROMIN + "," + ItemID.HARRALANDER + "," + ItemID.RANARR_WEED + "," + ItemID.TOADFLAX + "," + ItemID.IRIT_LEAF + "," + ItemID.AVANTOE + "," + ItemID.KWUARM + "," + ItemID.SNAPDRAGON + "," + ItemID.CADANTINE + "," + ItemID.LANTADYME + "," + ItemID.DWARF_WEED + "," + ItemID.TORSO));
 		busy_cleaning = false;
 	}
 
@@ -178,7 +178,6 @@ public class HerbCleanerPlugin extends Plugin {
 		grimyherb.clear();
 		timeout = 0;
 		busy_cleaning = false;
-
 	}
 
 
