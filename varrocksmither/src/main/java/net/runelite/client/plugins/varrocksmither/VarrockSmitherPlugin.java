@@ -326,7 +326,7 @@ public class VarrockSmitherPlugin extends Plugin {
 		{
 			return SMITHING;
 		}
-		if (lvlup !=null && (utils.getInventoryItemCount(barID, false) >= bars_per_item) &&
+		if (lvlup !=null && (utils.getInventoryItemCount(barID, false) <= bars_per_item) &&
 				(client.getLocalPlayer().getWorldLocation().getX() != (3188) &&
 						(client.getLocalPlayer().getWorldLocation().getY() != (3427))))
 		{
@@ -363,6 +363,7 @@ public class VarrockSmitherPlugin extends Plugin {
 				case ITERATING:
 					break;
 				case IDLING:
+					timeout = 1;
 					break;
 				case IS_SMITHING:
 					break;
@@ -376,23 +377,23 @@ public class VarrockSmitherPlugin extends Plugin {
 					break;
 				case BANKING:
 					openBank();
-					timeout = 1 +tickDelay();
+					timeout = 0 +tickDelay();
 					break;
 				case DEPOSIT_ALL_EXCEPT:
 					utils.depositAllExcept(ITEMS_TO_KEEP);
-					timeout = 1 +tickDelay();
+					timeout = 0 +tickDelay();
 					break;
 				case WITHDRAW:
 					withdraw();
-					timeout = 1 +tickDelay();
+					timeout = 0 +tickDelay();
 					break;
 				case CLOSE_BANK:
 					utils.closeBank();
-					timeout = 1 + tickDelay();
+					timeout = 0 + tickDelay();
 					break;
 				case SMITH:
 					clicktoSmith();
-					timeout = 1 + tickDelay();
+					timeout = 0 + tickDelay();
 					break;
 				case OUT_OF_BARS:
 					startVarrockSmither = false;
