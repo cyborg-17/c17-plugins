@@ -1,0 +1,21 @@
+package net.runelite.client.plugins.cballmaker;
+
+public enum CballMakerState
+{
+
+	HANDLE_BREAK,
+	TIMEOUT,
+	ITERATING,
+	IDLING,
+	DEPOSIT_BALLS,
+	WITHDRAW_BAR,
+	OPEN_BANK,
+	OUT_OF_BARS,
+	CLICK_BALL_WIDGET,
+	MOVING,
+	WITHDRAW_MOULD,
+	FURNACE,
+	SMELTING,
+	CLOSE_BANK;
+
+}
