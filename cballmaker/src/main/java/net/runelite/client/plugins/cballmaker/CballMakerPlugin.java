@@ -324,7 +324,7 @@ public class CballMakerPlugin extends Plugin {
 		}
 
 
-		if (utils.inventoryEmpty() || !utils.inventoryContains(ItemID.STEEL_BAR))
+		if ((player.getPoseAnimation() == 813 || (player.getPoseAnimation() == 808)) && (utils.inventoryEmpty() || !utils.inventoryContains(ItemID.STEEL_BAR)))
 		{
 			return OPEN_BANK;
 		}
