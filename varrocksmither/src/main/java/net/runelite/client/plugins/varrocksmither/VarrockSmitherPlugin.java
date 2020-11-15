@@ -213,7 +213,8 @@ public class VarrockSmitherPlugin extends Plugin {
 				targetMenu = new MenuEntry("", "",
 						1, MenuOpcode.CC_OP.getId(), -1, selectedItem.getItem().getId(), false);
 				utils.setMenuEntry(targetMenu);
-				utils.delayClickRandomPointCenter(-200, 200, sleepDelay());
+				//utils.delayClickRandomPointCenter(-200, 200, sleepDelay());
+				utils.delayMouseClick(smithingwidgetitem.getBounds(), sleepDelay());
 			}
 		} else {
 			utils.sendGameMessage("Smithing UI not found");
@@ -282,7 +283,7 @@ public class VarrockSmitherPlugin extends Plugin {
 			can_smith = true;
 			return BANKING;
 		}
-		if (utils.isBankOpen())
+		if (utils.isBankOpen() && client.getLocalPlayer().getPoseAnimation() == 808 || client.getLocalPlayer().getPoseAnimation() == 813)
 		{
 			if (!utils.bankContainsAnyOf(barID))
 			{
@@ -409,6 +410,7 @@ public class VarrockSmitherPlugin extends Plugin {
 			}
 		}
 	}
+
 
 		@Subscribe
 		private void onGameStateChanged (GameStateChanged event)

@@ -149,7 +149,7 @@ public class HerbCleanerPlugin extends Plugin {
 					overlayManager.add(overlay);
 					bankerID = config.bankerID();
 					grimyherbID = config.grimyherbID();
-					cleanherbIDS.addAll(utils.stringToIntList(ItemID.GUAM_LEAF + "," + ItemID.MARRENTILL + "," + ItemID.TARROMIN + "," + ItemID.HARRALANDER + "," + ItemID.RANARR_WEED + "," + ItemID.TOADFLAX + "," + ItemID.IRIT_LEAF + "," + ItemID.AVANTOE + "," + ItemID.KWUARM + "," + ItemID.SNAPDRAGON + "," + ItemID.CADANTINE + "," + ItemID.LANTADYME + "," + ItemID.DWARF_WEED + "," + ItemID.TORSO));
+					cleanherbIDS.addAll(utils.stringToIntList(ItemID.GUAM_LEAF + "," + ItemID.MARRENTILL + "," + ItemID.TARROMIN + "," + ItemID.HARRALANDER + "," + ItemID.RANARR_WEED + "," + ItemID.TOADFLAX + "," + ItemID.IRIT_LEAF + "," + ItemID.AVANTOE + "," + ItemID.KWUARM + "," + ItemID.SNAPDRAGON + "," + ItemID.CADANTINE + "," + ItemID.LANTADYME + "," + ItemID.DWARF_WEED + "," + ItemID.TORSTOL));
 					busy_cleaning = false;
 				} else {
 					resetVals();
@@ -163,7 +163,7 @@ public class HerbCleanerPlugin extends Plugin {
 		bankerID = config.bankerID();
 		opCODE = config.opCODE();
 		grimyherbID = config.grimyherbID();
-		cleanherbIDS.addAll(utils.stringToIntList(ItemID.GUAM_LEAF + "," + ItemID.MARRENTILL + "," + ItemID.TARROMIN + "," + ItemID.HARRALANDER + "," + ItemID.RANARR_WEED + "," + ItemID.TOADFLAX + "," + ItemID.IRIT_LEAF + "," + ItemID.AVANTOE + "," + ItemID.KWUARM + "," + ItemID.SNAPDRAGON + "," + ItemID.CADANTINE + "," + ItemID.LANTADYME + "," + ItemID.DWARF_WEED + "," + ItemID.TORSO));
+		cleanherbIDS.addAll(utils.stringToIntList(ItemID.GUAM_LEAF + "," + ItemID.MARRENTILL + "," + ItemID.TARROMIN + "," + ItemID.HARRALANDER + "," + ItemID.RANARR_WEED + "," + ItemID.TOADFLAX + "," + ItemID.IRIT_LEAF + "," + ItemID.AVANTOE + "," + ItemID.KWUARM + "," + ItemID.SNAPDRAGON + "," + ItemID.CADANTINE + "," + ItemID.LANTADYME + "," + ItemID.DWARF_WEED + "," + ItemID.TORSTOL));
 		busy_cleaning = false;
 	}
 
