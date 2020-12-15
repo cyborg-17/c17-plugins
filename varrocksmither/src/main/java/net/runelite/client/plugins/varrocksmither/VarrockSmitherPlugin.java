@@ -213,7 +213,6 @@ public class VarrockSmitherPlugin extends Plugin {
 				targetMenu = new MenuEntry("", "",
 						1, MenuOpcode.CC_OP.getId(), -1, selectedItem.getItem().getId(), false);
 				utils.setMenuEntry(targetMenu);
-				//utils.delayClickRandomPointCenter(-200, 200, sleepDelay());
 				utils.delayMouseClick(smithingwidgetitem.getBounds(), sleepDelay());
 			}
 		} else {
@@ -232,7 +231,7 @@ public class VarrockSmitherPlugin extends Plugin {
 			targetMenu = new MenuEntry("", "",
 					npc.getIndex(), MenuOpcode.NPC_THIRD_OPTION.getId(), 0, 0, false);
 			utils.setMenuEntry(targetMenu);
-			utils.delayMouseClick(npc.getConvexHull().getBounds(),sleepDelay());
+			utils.delayClickRandomPointCenter(-200, 200, sleepDelay());
 		}
 		else
 		{
@@ -273,7 +272,8 @@ public class VarrockSmitherPlugin extends Plugin {
 
 	public VarrockSmitherState getState()
 	{
-		if (timeout > 0)
+		if (timeout > 0 && client.getVarpValue(173) == 1 && client.getLocalPlayer().getWorldLocation().getX() == (3185) &&
+				(client.getLocalPlayer().getWorldLocation().getY() == (3436) && !utils.isBankOpen()))
 		{
 			utils.handleRun(20, 40);
 			return TIMEOUT;
