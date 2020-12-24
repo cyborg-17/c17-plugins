@@ -1,3 +1,5 @@
+import ProjectVersions.openosrsVersion
+
 /*
  * Copyright (c) 2019 Owain van Brakel <https://github.com/Owain94>
  * All rights reserved.
@@ -23,14 +25,10 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-version = "0.0.6"
+version = "4.6.0"
 
-project.extra["PluginName"] = "Herb Cleaner"
-project.extra["PluginDescription"] = "Cleans herbs for you"
-
-dependencies {
-    compileOnly(project(":botutils"))
-    compileOnly(group = "com.owain.externals", name = "chinbreakhandler", version = "0.0.13+")}
+project.extra["PluginName"] = "BotUtils"
+project.extra["PluginDescription"] = "Illumine - Utils required for plugins to function with added automation"
 
 tasks {
     jar {
@@ -39,11 +37,6 @@ tasks {
                     "Plugin-Version" to project.version,
                     "Plugin-Id" to nameToId(project.extra["PluginName"] as String),
                     "Plugin-Provider" to project.extra["PluginProvider"],
-                    "Plugin-Dependencies" to
-                            arrayOf(
-                                    nameToId("BotUtils"),
-                                    "chinbreakhandler-plugin"
-                            ).joinToString(),
                     "Plugin-Description" to project.extra["PluginDescription"],
                     "Plugin-License" to project.extra["PluginLicense"]
             ))
