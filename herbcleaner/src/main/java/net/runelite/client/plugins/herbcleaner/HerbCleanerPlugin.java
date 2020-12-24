@@ -48,7 +48,7 @@ import net.runelite.client.plugins.PluginDependency;
 import net.runelite.client.plugins.PluginDescriptor;
 import net.runelite.client.plugins.PluginManager;
 import net.runelite.client.plugins.PluginType;
-import net.runelite.client.plugins.botutils.BotUtils;
+import net.runelite.client.plugins.iutils.*;
 import net.runelite.client.ui.overlay.OverlayManager;
 import org.pf4j.Extension;
 import static net.runelite.client.plugins.herbcleaner.HerbCleanerState.*;
@@ -58,7 +58,7 @@ import net.runelite.api.NPC;
 
 
 @Extension
-@PluginDependency(BotUtils.class)
+@PluginDependency(iUtils.class)
 @PluginDescriptor(
 	name = "c17 - Herb cleaner",
 	enabledByDefault = false,
@@ -74,7 +74,37 @@ public class HerbCleanerPlugin extends Plugin {
 	private Client client;
 
 	@Inject
-	private BotUtils utils;
+	private iUtils utils;
+
+	@Inject
+	private MouseUtils mouse;
+
+	@Inject
+	private PlayerUtils playerUtils;
+
+	@Inject
+	private InventoryUtils inventory;
+
+	@Inject
+	private InterfaceUtils interfaceUtils;
+
+	@Inject
+	private CalculationUtils calc;
+
+	@Inject
+	private MenuUtils menu;
+
+	@Inject
+	private ObjectUtils object;
+
+	@Inject
+	private BankUtils bank;
+
+	@Inject
+	private NPCUtils npc;
+
+	@Inject
+	private WalkUtils walk;
 
 	@Inject
 	private HerbCleanerConfig config;
@@ -108,6 +138,7 @@ public class HerbCleanerPlugin extends Plugin {
 	long sleepLength = 0;
 	boolean startHerbCleaner;
 	boolean busy_cleaning;
+	NPC bankNPC;
 	private final Set<Integer> grimyherb = new HashSet<>();
 	private final Set<Integer> cleanherbIDS = new HashSet<>();
 
@@ -202,16 +233,17 @@ public class HerbCleanerPlugin extends Plugin {
 
 	private void cleanHerbs() {
 		busy_cleaning = true;
-		utils.inventoryItemsInteract(utils.stringToIntList("" + config.grimyherbID()), opCODE, false, true, config.sleepMin(), config.sleepMax());
+		inventory.itemsInteract(utils.stringToIntList("" + config.grimyherbID()), opCODE, false, true, config.sleepMin(), config.sleepMax());
 	}
 
 	private void openBank() {
-		NPC banker = utils.findNearestNpc(bankerID);
-		if (banker != null) {
+		bankNPC = npc.findNearestNpc(bankerID);
+		if (bankNPC != null) {
 			targetMenu = new MenuEntry("", "",
-					banker.getIndex(), MenuOpcode.NPC_THIRD_OPTION.getId(), 0, 0, false);
-			utils.setMenuEntry(targetMenu);
-			utils.delayMouseClick(banker.getConvexHull().getBounds(), sleepDelay());
+					bankNPC.getIndex(), MenuOpcode.NPC_THIRD_OPTION.getId(), 0, 0, false);
+			menu.setEntry(targetMenu);
+			mouse.delayMouseClick(bankNPC.getConvexHull().getBounds(), sleepDelay());
+
 		} else {
 			utils.sendGameMessage("Bank not found, stopping");
 			startHerbCleaner = false;
@@ -219,11 +251,11 @@ public class HerbCleanerPlugin extends Plugin {
 	}
 
 	private void withdrawHerb() {
-		utils.withdrawAllItem(grimyherbID);
+		bank.withdrawAllItem(grimyherbID);
 	}
 
 	private void deposit() {
-		utils.depositAllOfItems(cleanherbIDS);
+		bank.depositAllOfItems(cleanherbIDS);
 	}
 
 
@@ -231,13 +263,13 @@ public class HerbCleanerPlugin extends Plugin {
 	{
 		if (timeout > 0)
 		{
-			utils.handleRun(20, 20);
+			playerUtils.handleRun(20, 20);
 			return TIMEOUT;
 		}
 		Widget lvlup = client.getWidget(WidgetInfo.LEVEL_UP_SKILL);
 		if (lvlup !=null)
 		{
-			if (utils.inventoryContains(grimyherbID))
+			if (inventory.containsItem(grimyherbID))
 			{
 				return CLEANING_HERBS;
 			}
@@ -246,17 +278,17 @@ public class HerbCleanerPlugin extends Plugin {
 				return OPEN_BANK;
 			}
 		}
-		if (utils.isBankOpen())
+		if (bank.isOpen())
 		{
-			if (!utils.bankContainsAnyOf(grimyherbID) && !utils.inventoryContains(grimyherbID))
+			if (!bank.containsAnyOf(grimyherbID) && !inventory.containsItem(grimyherbID))
 			{
 				return OUT_OF_GRIMY_HERBS;
 			}
-			if (utils.inventoryFull() && !utils.inventoryContains(grimyherbID))
+			if (inventory.isFull() && !inventory.containsItem(grimyherbID))
 			{
 				return DEPOSIT;
 			}
-			if (!utils.inventoryFull() && !utils.inventoryContains(grimyherbID))
+			if (!inventory.isFull() && !inventory.containsItem(grimyherbID))
 			{
 				return WITHDRAWING_GRIMY_HERBS;
 			} else
@@ -269,7 +301,7 @@ public class HerbCleanerPlugin extends Plugin {
 		{
 			return HANDLE_BREAK;
 		}
-		if (utils.inventoryContains(grimyherbID) && !utils.isBankOpen())
+		if (inventory.containsItem(grimyherbID) && !bank.isOpen())
 		{
 			return CLEANING_HERBS;
 		}
@@ -282,7 +314,7 @@ public class HerbCleanerPlugin extends Plugin {
 	@Subscribe
 	private void onGameTick(GameTick event)
 	{
-		if (busy_cleaning && utils.inventoryContains(grimyherbID))
+		if (busy_cleaning && inventory.containsItem(grimyherbID))
 		{
 			return;
 		}
@@ -317,7 +349,7 @@ public class HerbCleanerPlugin extends Plugin {
 					timeout = 0 + tickDelay();
 					break;
 				case CLOSE_BANK:
-					utils.closeBank();
+					bank.close();
 					timeout = 0 + tickDelay();
 					break;
 				case CLEANING_HERBS:
@@ -340,7 +372,7 @@ public class HerbCleanerPlugin extends Plugin {
 					startHerbCleaner = false;
 					if (config.logout())
 					{
-					utils.logout();
+					interfaceUtils.logout();
 					}
 				resetVals();
 				break;
@@ -351,13 +383,13 @@ public class HerbCleanerPlugin extends Plugin {
 
 	private long sleepDelay()
 	{
-		sleepLength = utils.randomDelay(config.sleepWeightedDistribution(), config.sleepMin(), config.sleepMax(), config.sleepDeviation(), config.sleepTarget());
+		sleepLength = calc.randomDelay(config.sleepWeightedDistribution(), config.sleepMin(), config.sleepMax(), config.sleepDeviation(), config.sleepTarget());
 		return sleepLength;
 	}
 
 	private int tickDelay()
 	{
-		int tickLength = (int) utils.randomDelay(config.tickDelayWeightedDistribution(), config.tickDelayMin(), config.tickDelayMax(), config.tickDelayDeviation(), config.tickDelayTarget());
+		int tickLength = (int) calc.randomDelay(config.tickDelayWeightedDistribution(), config.tickDelayMin(), config.tickDelayMax(), config.tickDelayDeviation(), config.tickDelayTarget());
 		log.debug("tick delay for {} ticks", tickLength);
 		return tickLength;
 	}

@@ -47,7 +47,7 @@ import net.runelite.client.plugins.PluginDependency;
 import net.runelite.client.plugins.PluginDescriptor;
 import net.runelite.client.plugins.PluginManager;
 import net.runelite.client.plugins.PluginType;
-import net.runelite.client.plugins.botutils.BotUtils;
+import net.runelite.client.plugins.iutils.*;
 import net.runelite.client.ui.overlay.OverlayManager;
 import org.pf4j.Extension;
 import static net.runelite.client.plugins.varrocksmither.VarrockSmitherState.*;
@@ -55,7 +55,7 @@ import static net.runelite.client.plugins.varrocksmither.VarrockSmitherState.*;
 
 
 @Extension
-@PluginDependency(BotUtils.class)
+@PluginDependency(iUtils.class)
 @PluginDescriptor(
 	name = "c17 - VarrockSmither",
 	enabledByDefault = false,
@@ -69,7 +69,37 @@ public class VarrockSmitherPlugin extends Plugin {
 	private Client client;
 
 	@Inject
-	private BotUtils utils;
+	private iUtils utils;
+
+	@Inject
+	private MouseUtils mouse;
+
+	@Inject
+	private PlayerUtils playerUtils;
+
+	@Inject
+	private InventoryUtils inventory;
+
+	@Inject
+	private InterfaceUtils interfaceUtils;
+
+	@Inject
+	private CalculationUtils calc;
+
+	@Inject
+	private MenuUtils menu;
+
+	@Inject
+	private ObjectUtils object;
+
+	@Inject
+	private BankUtils bank;
+
+	@Inject
+	private NPCUtils npc;
+
+	@Inject
+	private WalkUtils walk;
 
 	@Inject
 	private VarrockSmitherConfig config;
@@ -102,6 +132,7 @@ public class VarrockSmitherPlugin extends Plugin {
 	long sleepLength = 0;
 	boolean startVarrockSmither;
 	boolean can_smith;
+	NPC bankNPC;
 
 	@Override
 	protected void startUp() {
@@ -193,12 +224,12 @@ public class VarrockSmitherPlugin extends Plugin {
 	}
 
 	private long sleepDelay() {
-		sleepLength = utils.randomDelay(config.sleepWeightedDistribution(), config.sleepMin(), config.sleepMax(), config.sleepDeviation(), config.sleepTarget());
+		sleepLength = calc.randomDelay(config.sleepWeightedDistribution(), config.sleepMin(), config.sleepMax(), config.sleepDeviation(), config.sleepTarget());
 		return sleepLength;
 	}
 
 	private int tickDelay() {
-		int tickLength = (int) utils.randomDelay(config.tickDelayWeightedDistribution(), config.tickDelayMin(), config.tickDelayMax(), config.tickDelayDeviation(), config.tickDelayTarget());
+		int tickLength = (int) calc.randomDelay(config.tickDelayWeightedDistribution(), config.tickDelayMin(), config.tickDelayMax(), config.tickDelayDeviation(), config.tickDelayTarget());
 		log.debug("tick delay for {} ticks", tickLength);
 		return tickLength;
 	}
@@ -212,8 +243,8 @@ public class VarrockSmitherPlugin extends Plugin {
 			if (smithingwidgetitem != null) {
 				targetMenu = new MenuEntry("", "",
 						1, MenuOpcode.CC_OP.getId(), -1, selectedItem.getItem().getId(), false);
-				utils.setMenuEntry(targetMenu);
-				utils.delayMouseClick(smithingwidgetitem.getBounds(), sleepDelay());
+				menu.setEntry(targetMenu);
+				mouse.delayMouseClick(smithingwidgetitem.getBounds(), sleepDelay());
 			}
 		} else {
 			utils.sendGameMessage("Smithing UI not found");
@@ -225,13 +256,13 @@ public class VarrockSmitherPlugin extends Plugin {
 
 	private void openBank()
 	{
-		NPC npc = utils.findNearestNpc(2897);
+		bankNPC = npc.findNearestNpc(2897);
 		if (npc != null)
 		{
 			targetMenu = new MenuEntry("", "",
-					npc.getIndex(), MenuOpcode.NPC_THIRD_OPTION.getId(), 0, 0, false);
-			utils.setMenuEntry(targetMenu);
-			utils.delayClickRandomPointCenter(-200, 200, sleepDelay());
+					bankNPC.getIndex(), MenuOpcode.NPC_THIRD_OPTION.getId(), 0, 0, false);
+			menu.setEntry(targetMenu);
+			mouse.delayClickRandomPointCenter(-200, 200, sleepDelay());
 		}
 		else
 		{
@@ -241,15 +272,17 @@ public class VarrockSmitherPlugin extends Plugin {
 	}
 
 
-	private void withdraw() {
-		utils.withdrawAllItem(barID);
+	private void withdraw()
+	{
+		bank.withdrawAllItem(barID);
 	}
 
 	@Subscribe
 	public void onItemContainerChanged(ItemContainerChanged event) {
 		if (client.getLocalPlayer().getWorldLocation().getX() == (3188) &&
 				(client.getLocalPlayer().getWorldLocation().getY() == (3427))) {
-			if (utils.getInventoryItemCount(barID, false) >= bars_per_item) {
+			if (inventory.getItemCount(barID, false) >= bars_per_item)
+			{
 				can_smith = true;
 			}
 			else
@@ -273,9 +306,9 @@ public class VarrockSmitherPlugin extends Plugin {
 	public VarrockSmitherState getState()
 	{
 		if (timeout > 0 && client.getVarpValue(173) == 1 && client.getLocalPlayer().getWorldLocation().getX() == (3185) &&
-				(client.getLocalPlayer().getWorldLocation().getY() == (3436) && !utils.isBankOpen()))
+				(client.getLocalPlayer().getWorldLocation().getY() == (3436) && !bank.isOpen()))
 		{
-			utils.handleRun(20, 40);
+			playerUtils.handleRun(20, 40);
 			return TIMEOUT;
 		}
 		if (!can_smith)
@@ -283,21 +316,21 @@ public class VarrockSmitherPlugin extends Plugin {
 			can_smith = true;
 			return BANKING;
 		}
-		if (utils.isBankOpen() && client.getLocalPlayer().getPoseAnimation() == 808 || client.getLocalPlayer().getPoseAnimation() == 813)
+		if (bank.isOpen() && client.getLocalPlayer().getPoseAnimation() == 808 || client.getLocalPlayer().getPoseAnimation() == 813)
 		{
-			if (!utils.bankContainsAnyOf(barID))
+			if (!bank.containsAnyOf(barID))
 			{
 				return OUT_OF_BARS;
 			}
-			if (utils.inventoryContainsExcept(ITEMS_TO_KEEP))
+			if (inventory.containsExcept(ITEMS_TO_KEEP))
 			{
 				return DEPOSIT_ALL_EXCEPT;
 			}
-			if (!utils.inventoryContainsExcept(ITEMS_TO_KEEP) && utils.bankContains(barID, 1) && !utils.inventoryFull())
+			if (!inventory.containsExcept(ITEMS_TO_KEEP) && bank.contains(barID, 1) && !inventory.isFull())
 			{
 				return WITHDRAW;
 			}
-			if (!utils.bankContainsAnyOf(barID) && !utils.inventoryContains(barID))
+			if (!bank.containsAnyOf(barID) && !inventory.containsItem(barID))
 			{
 				return OUT_OF_BARS;
 			}
@@ -312,8 +345,8 @@ public class VarrockSmitherPlugin extends Plugin {
 		{
 			return HANDLE_BREAK;
 		}
-		if (!utils.isBankOpen() && can_smith && (client.getLocalPlayer().getWorldLocation().getX() == (3185) &&
-				(client.getLocalPlayer().getWorldLocation().getY() == (3436) && utils.getInventoryItemCount(barID, false) == 27)))
+		if (!bank.isOpen() && can_smith && (client.getLocalPlayer().getWorldLocation().getX() == (3185) &&
+				(client.getLocalPlayer().getWorldLocation().getY() == (3436) && inventory.getItemCount(barID, false) == 27)))
 		{
 			return SMITHING;
 		}
@@ -323,11 +356,11 @@ public class VarrockSmitherPlugin extends Plugin {
 			return SMITH;
 		}
 		Widget lvlup = client.getWidget(WidgetInfo.LEVEL_UP_SKILL);
-		if (lvlup !=null && (utils.getInventoryItemCount(barID, false) >= bars_per_item))
+		if (lvlup !=null && (inventory.getItemCount(barID, false) >= bars_per_item))
 		{
 			return SMITHING;
 		}
-		if (lvlup !=null && (utils.getInventoryItemCount(barID, false) <= bars_per_item) &&
+		if (lvlup !=null && (inventory.getItemCount(barID, false) <= bars_per_item) &&
 				(client.getLocalPlayer().getWorldLocation().getX() != (3188) &&
 						(client.getLocalPlayer().getWorldLocation().getY() != (3427))))
 		{
@@ -354,7 +387,7 @@ public class VarrockSmitherPlugin extends Plugin {
 				startVarrockSmither = false;
 				return;
 			}
-			utils.handleRun(40, 20);
+			playerUtils.handleRun(40, 20);
 			state = getState();
 			switch (state)
 			{
@@ -369,11 +402,11 @@ public class VarrockSmitherPlugin extends Plugin {
 				case IS_SMITHING:
 					break;
 				case SMITHING:
-					anvil = utils.findNearestGameObject(2097);
+					anvil = object.findNearestGameObject(2097);
 					targetMenu = new MenuEntry("", "", anvil.getId(), MenuOpcode.GAME_OBJECT_FIRST_OPTION.getId(),
 							anvil.getSceneMinLocation().getX(), anvil.getSceneMinLocation().getY(), false);
-					utils.setMenuEntry(targetMenu);
-					utils.delayMouseClick(anvil.getConvexHull().getBounds(), sleepDelay());
+					menu.setEntry(targetMenu);
+					mouse.delayMouseClick(anvil.getConvexHull().getBounds(), sleepDelay());
 					timeout = 1 +tickDelay();
 					break;
 				case BANKING:
@@ -381,7 +414,7 @@ public class VarrockSmitherPlugin extends Plugin {
 					timeout = 0 +tickDelay();
 					break;
 				case DEPOSIT_ALL_EXCEPT:
-					utils.depositAllExcept(ITEMS_TO_KEEP);
+					bank.depositAllExcept(ITEMS_TO_KEEP);
 					timeout = 0 +tickDelay();
 					break;
 				case WITHDRAW:
@@ -389,7 +422,7 @@ public class VarrockSmitherPlugin extends Plugin {
 					timeout = 0 +tickDelay();
 					break;
 				case CLOSE_BANK:
-					utils.closeBank();
+					bank.close();
 					timeout = 0 + tickDelay();
 					break;
 				case SMITH:
@@ -399,7 +432,7 @@ public class VarrockSmitherPlugin extends Plugin {
 				case OUT_OF_BARS:
 					if (config.logout())
 					{
-						utils.logout();
+						interfaceUtils.logout();
 					}
 					startVarrockSmither = false;
 					resetVals();

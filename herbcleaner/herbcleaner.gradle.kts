@@ -23,13 +23,13 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-version = "0.0.6"
+version = "0.0.7"
 
 project.extra["PluginName"] = "Herb Cleaner"
 project.extra["PluginDescription"] = "Cleans herbs for you"
 
 dependencies {
-    compileOnly(project(":botutils"))
+    compileOnly(project(":iutils"))
     compileOnly(group = "com.owain.externals", name = "chinbreakhandler", version = "0.0.13+")}
 
 tasks {
@@ -41,7 +41,7 @@ tasks {
                     "Plugin-Provider" to project.extra["PluginProvider"],
                     "Plugin-Dependencies" to
                             arrayOf(
-                                    nameToId("BotUtils"),
+                                    nameToId("iUtils"),
                                     "chinbreakhandler-plugin"
                             ).joinToString(),
                     "Plugin-Description" to project.extra["PluginDescription"],

@@ -24,3 +24,5 @@ hs_err*
 replay_pid*
 botutils/
 release/botutil*
+iutils/
+release/iutil*

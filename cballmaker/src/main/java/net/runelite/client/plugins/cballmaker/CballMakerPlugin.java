@@ -46,7 +46,7 @@ import net.runelite.client.plugins.PluginDependency;
 import net.runelite.client.plugins.PluginDescriptor;
 import net.runelite.client.plugins.PluginManager;
 import net.runelite.client.plugins.PluginType;
-import net.runelite.client.plugins.botutils.BotUtils;
+import net.runelite.client.plugins.iutils.*;
 import net.runelite.client.ui.overlay.OverlayManager;
 import org.pf4j.Extension;
 import static net.runelite.client.plugins.cballmaker.CballMakerState.*;
@@ -54,7 +54,7 @@ import static net.runelite.client.plugins.cballmaker.CballMakerState.*;
 
 
 @Extension
-@PluginDependency(BotUtils.class)
+@PluginDependency(iUtils.class)
 @PluginDescriptor(
 	name = "c17 - CballMaker",
 	enabledByDefault = false,
@@ -68,7 +68,37 @@ public class CballMakerPlugin extends Plugin {
 	private Client client;
 
 	@Inject
-	private BotUtils utils;
+	private iUtils utils;
+
+	@Inject
+	private MouseUtils mouse;
+
+	@Inject
+	private PlayerUtils playerUtils;
+
+	@Inject
+	private InventoryUtils inventory;
+
+	@Inject
+	private InterfaceUtils interfaceUtils;
+
+	@Inject
+	private CalculationUtils calc;
+
+	@Inject
+	private MenuUtils menu;
+
+	@Inject
+	private ObjectUtils object;
+
+	@Inject
+	private BankUtils bank;
+
+	@Inject
+	private NPCUtils npc;
+
+	@Inject
+	private WalkUtils walk;
 
 	@Inject
 	private CballMakerConfig config;
@@ -94,7 +124,7 @@ public class CballMakerPlugin extends Plugin {
 	int timeout = 0;
 	long sleepLength = 0;
 	boolean startCballMaker;
-
+	NPC bankNPC;
 
 	@Override
 	protected void startUp() {
@@ -170,12 +200,12 @@ public class CballMakerPlugin extends Plugin {
 	}
 
 	private long sleepDelay() {
-		sleepLength = utils.randomDelay(config.sleepWeightedDistribution(), config.sleepMin(), config.sleepMax(), config.sleepDeviation(), config.sleepTarget());
+		sleepLength = calc.randomDelay(config.sleepWeightedDistribution(), config.sleepMin(), config.sleepMax(), config.sleepDeviation(), config.sleepTarget());
 		return sleepLength;
 	}
 
 	private int tickDelay() {
-		int tickLength = (int) utils.randomDelay(config.tickDelayWeightedDistribution(), config.tickDelayMin(), config.tickDelayMax(), config.tickDelayDeviation(), config.tickDelayTarget());
+		int tickLength = (int) calc.randomDelay(config.tickDelayWeightedDistribution(), config.tickDelayMin(), config.tickDelayMax(), config.tickDelayDeviation(), config.tickDelayTarget());
 		log.debug("tick delay for {} ticks", tickLength);
 		return tickLength;
 	}
@@ -189,8 +219,8 @@ public class CballMakerPlugin extends Plugin {
 		{
 			targetMenu = new MenuEntry("","", 1 , MenuOpcode.CC_OP.getId(),
 					-1, 17694734,false);
-			utils.setMenuEntry(targetMenu);
-			utils.delayClickRandomPointCenter(-200, 200, sleepDelay());
+			menu.setEntry(targetMenu);
+			mouse.delayClickRandomPointCenter(-200, 200, sleepDelay());
 		}
 		else
 		{
@@ -203,13 +233,13 @@ public class CballMakerPlugin extends Plugin {
 
 	private void clickFurnace()
 	{
-		GameObject furnace = utils.findNearestGameObject(ObjectID.FURNACE_16469);
+		GameObject furnace = object.findNearestGameObject(ObjectID.FURNACE_16469);
 		if (furnace !=null)
 		{
 			targetMenu = new MenuEntry("","", furnace.getId(), MenuOpcode.GAME_OBJECT_SECOND_OPTION.getId(),
 					furnace.getLocalLocation().getSceneX(), furnace.getLocalLocation().getSceneY(),false);
-			utils.setMenuEntry(targetMenu);
-			utils.delayMouseClick(furnace.getConvexHull().getBounds(),sleepDelay());
+			menu.setEntry(targetMenu);
+			mouse.delayMouseClick(furnace.getConvexHull().getBounds(),sleepDelay());
 		}
 		else
 		{
@@ -220,13 +250,13 @@ public class CballMakerPlugin extends Plugin {
 
 	private void openBank()
 	{
-		NPC npc = utils.findNearestNpc(1613);
+		bankNPC = npc.findNearestNpc(1613);
 		if (npc != null)
 		{
 			targetMenu = new MenuEntry("", "",
-					npc.getIndex(), MenuOpcode.NPC_THIRD_OPTION.getId(), 0, 0, false);
-			utils.setMenuEntry(targetMenu);
-			utils.delayMouseClick(npc.getConvexHull().getBounds(),sleepDelay());
+					bankNPC.getIndex(), MenuOpcode.NPC_THIRD_OPTION.getId(), 0, 0, false);
+			menu.setEntry(targetMenu);
+			mouse.delayMouseClick(bankNPC.getConvexHull().getBounds(), sleepDelay());
 		}
 		else
 		{
@@ -237,17 +267,18 @@ public class CballMakerPlugin extends Plugin {
 
 	private void withdrawBars()
 	{
-		utils.withdrawAllItem(ItemID.STEEL_BAR);
+		bank.withdrawAllItem(ItemID.STEEL_BAR);
 	}
 
 	private void withdrawMould()
 	{
-		utils.withdrawItem(ItemID.AMMO_MOULD);
+
+		bank.withdrawAllItem(ItemID.AMMO_MOULD);
 	}
 
 	private void depositcBalls()
 	{
-		utils.depositAllOfItem(ItemID.CANNONBALL);
+		bank.withdrawAllItem(ItemID.CANNONBALL);
 	}
 
 
@@ -255,7 +286,7 @@ public class CballMakerPlugin extends Plugin {
 	{
 		if (timeout > 0)
 		{
-			utils.handleRun(20, 30);
+			playerUtils.handleRun(20, 30);
 			return TIMEOUT;
 		}
 
@@ -269,30 +300,31 @@ public class CballMakerPlugin extends Plugin {
 			return SMELTING;
 		}
 
-		if (utils.isBankOpen())
+		if (bank.isOpen())
 		{
-			if (!utils.inventoryContains(ItemID.AMMO_MOULD))
+			if (!inventory.containsItem(ItemID.AMMO_MOULD))
+
 			{
 				return WITHDRAW_MOULD;
 			}
-			if (!utils.bankContainsAnyOf(ItemID.STEEL_BAR) && !utils.inventoryContains(ItemID.STEEL_BAR))
+			if (!bank.containsAnyOf(ItemID.STEEL_BAR) && !inventory.containsItem(ItemID.STEEL_BAR))
 			{
 				return OUT_OF_BARS;
 			}
-			if (utils.inventoryContains(ItemID.CANNONBALL))
+			if (inventory.containsItem(ItemID.CANNONBALL))
 			{
 				return DEPOSIT_BALLS;
 			}
-			if (chinBreakHandler.shouldBreak(this) && !utils.inventoryContains(ItemID.CANNONBALL))
+			if (chinBreakHandler.shouldBreak(this) && !inventory.containsItem(ItemID.CANNONBALL))
 			{
 				return HANDLE_BREAK;
 			}
 
-			if (utils.bankContainsAnyOf(ItemID.STEEL_BAR) && !utils.inventoryFull())
+			if (bank.containsAnyOf(ItemID.STEEL_BAR) && !inventory.isFull())
 			{
 				return WITHDRAW_BAR;
 			}
-			if (utils.inventoryContains(ItemID.STEEL_BAR))
+			if (inventory.containsItem(ItemID.STEEL_BAR))
 			{
 				return CLOSE_BANK;
 			}
@@ -304,7 +336,7 @@ public class CballMakerPlugin extends Plugin {
 			return CLICK_BALL_WIDGET;
 		}
 
-		if (utils.inventoryContains(ItemID.STEEL_BAR) && client.getLocalPlayer().getWorldLocation().getX() == 3098 &&
+		if (inventory.containsItem(ItemID.STEEL_BAR) && client.getLocalPlayer().getWorldLocation().getX() == 3098 &&
 				client.getLocalPlayer().getWorldLocation().getY() == 3494)
 		{
 			return FURNACE;
@@ -313,7 +345,7 @@ public class CballMakerPlugin extends Plugin {
 		Widget lvlup = client.getWidget(WidgetInfo.LEVEL_UP_SKILL);
 		if (lvlup !=null)
 		{
-			if (utils.inventoryContains(ItemID.STEEL_BAR))
+			if (inventory.containsItem(ItemID.STEEL_BAR))
 			{
 				return FURNACE;
 			}
@@ -324,7 +356,7 @@ public class CballMakerPlugin extends Plugin {
 		}
 
 
-		if ((player.getPoseAnimation() == 813 || (player.getPoseAnimation() == 808)) && (utils.inventoryEmpty() || !utils.inventoryContains(ItemID.STEEL_BAR)))
+		if ((player.getPoseAnimation() == 813 || (player.getPoseAnimation() == 808)) && (inventory.isEmpty() || !inventory.containsItem(ItemID.STEEL_BAR)))
 		{
 			return OPEN_BANK;
 		}
@@ -347,7 +379,7 @@ public class CballMakerPlugin extends Plugin {
 				startCballMaker = false;
 				return;
 			}
-			utils.handleRun(40, 20);
+			playerUtils.handleRun(40, 20);
 			state = getState();
 			switch (state)
 			{
@@ -370,7 +402,7 @@ public class CballMakerPlugin extends Plugin {
 					timeout = 0 +tickDelay();
 					break;
 				case CLOSE_BANK:
-					utils.closeBank();
+					bank.close();
 					timeout = 0 +tickDelay();
 					break;
 				case DEPOSIT_BALLS:
@@ -396,7 +428,7 @@ public class CballMakerPlugin extends Plugin {
 				case OUT_OF_BARS:
 					if (config.logout())
 					{
-						utils.logout();
+						interfaceUtils.logout();
 					}
 					startCballMaker = false;
 					resetVals();
