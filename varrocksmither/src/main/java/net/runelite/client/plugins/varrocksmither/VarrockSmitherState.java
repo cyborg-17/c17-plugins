@@ -14,6 +14,8 @@ public enum VarrockSmitherState
 	DEPOSIT_ALL_EXCEPT,
 	WITHDRAW,
 	OUT_OF_BARS,
+	WALK,
+	RUN,
 	CLOSE_BANK;
 
 }

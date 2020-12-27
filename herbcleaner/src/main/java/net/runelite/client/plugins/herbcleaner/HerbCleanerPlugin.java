@@ -239,10 +239,10 @@ public class HerbCleanerPlugin extends Plugin {
 	private void openBank() {
 		bankNPC = npc.findNearestNpc(bankerID);
 		if (bankNPC != null) {
-			targetMenu = new MenuEntry("", "",
-					bankNPC.getIndex(), MenuOpcode.NPC_THIRD_OPTION.getId(), 0, 0, false);
+			targetMenu = new MenuEntry("", "", bankNPC.getIndex(), 11, 0, 0, true);
 			menu.setEntry(targetMenu);
 			mouse.delayMouseClick(bankNPC.getConvexHull().getBounds(), sleepDelay());
+
 
 		} else {
 			utils.sendGameMessage("Bank not found, stopping");

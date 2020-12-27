@@ -33,6 +33,7 @@ import java.util.ArrayList;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import net.runelite.api.*;
+import net.runelite.api.coords.WorldPoint;
 import net.runelite.api.events.*;
 import net.runelite.api.events.ConfigButtonClicked;
 import net.runelite.api.events.GameStateChanged;
@@ -262,7 +263,7 @@ public class VarrockSmitherPlugin extends Plugin {
 			targetMenu = new MenuEntry("", "",
 					bankNPC.getIndex(), MenuOpcode.NPC_THIRD_OPTION.getId(), 0, 0, false);
 			menu.setEntry(targetMenu);
-			mouse.delayClickRandomPointCenter(-200, 200, sleepDelay());
+			mouse.delayMouseClick(bankNPC.getConvexHull().getBounds(), sleepDelay());
 		}
 		else
 		{
@@ -305,13 +306,20 @@ public class VarrockSmitherPlugin extends Plugin {
 
 	public VarrockSmitherState getState()
 	{
-		if (timeout > 0 && client.getVarpValue(173) == 1 && client.getLocalPlayer().getWorldLocation().getX() == (3185) &&
-				(client.getLocalPlayer().getWorldLocation().getY() == (3436) && !bank.isOpen()))
+		if (timeout > 0)
 		{
-			playerUtils.handleRun(20, 40);
 			return TIMEOUT;
 		}
-		if (!can_smith)
+
+		if (client.getLocalPlayer().getWorldLocation().getX() == (3185) &&
+			(client.getLocalPlayer().getWorldLocation().getY() == (3436) && !bank.isOpen() &&
+					(client.getVarpValue(173) == 0) && (client.getEnergy() > 20)))
+		{
+			return RUN;
+		}
+
+		if (!can_smith && client.getLocalPlayer().getWorldLocation().getX() == (3185) &&
+				(client.getLocalPlayer().getWorldLocation().getY() == (3436) && !bank.isOpen()))
 		{
 			can_smith = true;
 			return BANKING;
@@ -334,8 +342,9 @@ public class VarrockSmitherPlugin extends Plugin {
 			{
 				return OUT_OF_BARS;
 			}
-			if (can_smith)
+			if (inventory.containsItemAmount(config.barID(),27,false,true))
 			{
+				can_smith = true;
 				return CLOSE_BANK;
 			}
 
@@ -360,16 +369,17 @@ public class VarrockSmitherPlugin extends Plugin {
 		{
 			return SMITHING;
 		}
-		if (lvlup !=null && (inventory.getItemCount(barID, false) <= bars_per_item) &&
-				(client.getLocalPlayer().getWorldLocation().getX() != (3188) &&
-						(client.getLocalPlayer().getWorldLocation().getY() != (3427))))
+		if (lvlup !=null || lvlup ==null && (inventory.getItemCount(barID, false) <= bars_per_item) &&
+				(client.getLocalPlayer().getWorldLocation().getX() == (3188) &&
+						(client.getLocalPlayer().getWorldLocation().getY() == (3427))))
 		{
-			return BANKING;
+			return WALK;
 		}
+
 		Widget chat = client.getWidget(WidgetInfo.DIALOG_NOTIFICATION_TEXT);
 		if (chat !=null)
 		{
-			return BANKING;
+			return WALK;
 		}
 		return IDLING;
 	}
@@ -409,9 +419,19 @@ public class VarrockSmitherPlugin extends Plugin {
 					mouse.delayMouseClick(anvil.getConvexHull().getBounds(), sleepDelay());
 					timeout = 1 +tickDelay();
 					break;
+				case RUN:
+					targetMenu = new MenuEntry("", "", 1, 57, -1, 10485782, false);
+					menu.setEntry(targetMenu);
+					mouse.delayClickRandomPointCenter(50,50,sleepDelay());
+					timeout = 0 +tickDelay();
+					break;
 				case BANKING:
 					openBank();
 					timeout = 0 +tickDelay();
+					break;
+				case WALK:
+					walk.sceneWalk(new WorldPoint(3185, 3436, 0), 0, sleepDelay());
+					timeout = 0+ tickDelay();
 					break;
 				case DEPOSIT_ALL_EXCEPT:
 					bank.depositAllExcept(ITEMS_TO_KEEP);

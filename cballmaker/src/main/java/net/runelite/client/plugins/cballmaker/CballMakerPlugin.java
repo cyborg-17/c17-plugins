@@ -278,7 +278,7 @@ public class CballMakerPlugin extends Plugin {
 
 	private void depositcBalls()
 	{
-		bank.withdrawAllItem(ItemID.CANNONBALL);
+		bank.depositAllOfItem(ItemID.CANNONBALL);
 	}
 
 
