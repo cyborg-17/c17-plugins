@@ -369,7 +369,7 @@ public class VarrockSmitherPlugin extends Plugin {
 		{
 			return SMITHING;
 		}
-		if (lvlup !=null || lvlup ==null && (inventory.getItemCount(barID, false) <= bars_per_item) &&
+		if (lvlup !=null || lvlup ==null && (inventory.getItemCount(barID, false) < bars_per_item) &&
 				(client.getLocalPlayer().getWorldLocation().getX() == (3188) &&
 						(client.getLocalPlayer().getWorldLocation().getY() == (3427))))
 		{
