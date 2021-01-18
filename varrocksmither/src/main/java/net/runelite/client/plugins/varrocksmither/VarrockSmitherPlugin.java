@@ -178,7 +178,7 @@ public class VarrockSmitherPlugin extends Plugin {
 			case "startButton":
 				if (!startVarrockSmither) {
 					startVarrockSmither = true;
-					chinBreakHandler.startPlugin(this);
+				//	chinBreakHandler.startPlugin(this);
 					botTimer = Instant.now();
 					state = null;
 					targetMenu = null;
@@ -326,6 +326,10 @@ public class VarrockSmitherPlugin extends Plugin {
 		}
 		if (bank.isOpen() && client.getLocalPlayer().getPoseAnimation() == 808 || client.getLocalPlayer().getPoseAnimation() == 813)
 		{
+			if (client.getWidget(WidgetInfo.BANK_CONTAINER) == null)
+			{
+				return TIMEOUT;
+			}
 			if (!bank.containsAnyOf(barID))
 			{
 				return OUT_OF_BARS;
@@ -349,11 +353,11 @@ public class VarrockSmitherPlugin extends Plugin {
 			}
 
 		}
-		if (chinBreakHandler.shouldBreak(this) &&(client.getLocalPlayer().getWorldLocation().getX() == (3185) &&
-			(client.getLocalPlayer().getWorldLocation().getY() == (3436))))
-		{
-			return HANDLE_BREAK;
-		}
+	//	if (chinBreakHandler.shouldBreak(this) &&(client.getLocalPlayer().getWorldLocation().getX() == (3185) &&
+	//		(client.getLocalPlayer().getWorldLocation().getY() == (3436))))
+	//	{
+	//		return HANDLE_BREAK;
+	//	}
 		if (!bank.isOpen() && can_smith && (client.getLocalPlayer().getWorldLocation().getX() == (3185) &&
 				(client.getLocalPlayer().getWorldLocation().getY() == (3436) && inventory.getItemCount(barID, false) == 27)))
 		{
@@ -457,9 +461,9 @@ public class VarrockSmitherPlugin extends Plugin {
 					startVarrockSmither = false;
 					resetVals();
 					break;
-				case HANDLE_BREAK:
-					chinBreakHandler.startBreak(this);
-					timeout = 8;
+			//	case HANDLE_BREAK:
+			//		chinBreakHandler.startBreak(this);
+			//		timeout = 8;
 			}
 		}
 	}

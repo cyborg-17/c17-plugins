@@ -23,7 +23,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-version = "0.0.9"
+version = "0.1.0"
 
 project.extra["PluginName"] = "VarrockSmither"
 project.extra["PluginDescription"] = "Smithing in varrock for you"
