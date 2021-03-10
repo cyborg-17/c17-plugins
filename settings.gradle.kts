@@ -25,11 +25,9 @@
 
 rootProject.name = "c17 Plugins"
 
-//include(":botutils")
 include(":herbcleaner")
 include(":varrocksmither")
 include(":cballmaker")
-//include(":iutils")
 
 for (project in rootProject.children) {
     project.apply {
