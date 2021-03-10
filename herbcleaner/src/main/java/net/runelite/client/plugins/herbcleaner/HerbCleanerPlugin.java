@@ -30,7 +30,7 @@ import com.owain.chinbreakhandler.ChinBreakHandler;
 import java.util.concurrent.TimeUnit;
 import net.runelite.api.Client;
 import net.runelite.api.MenuEntry;
-import net.runelite.api.MenuOpcode;
+import net.runelite.api.MenuAction;
 import net.runelite.api.events.GameTick;
 import java.time.Instant;
 import javax.inject.Inject;
@@ -47,7 +47,6 @@ import net.runelite.client.plugins.Plugin;
 import net.runelite.client.plugins.PluginDependency;
 import net.runelite.client.plugins.PluginDescriptor;
 import net.runelite.client.plugins.PluginManager;
-import net.runelite.client.plugins.PluginType;
 import net.runelite.client.plugins.iutils.*;
 import net.runelite.client.ui.overlay.OverlayManager;
 import org.pf4j.Extension;
@@ -63,8 +62,7 @@ import net.runelite.api.NPC;
 	name = "c17 - Herb cleaner",
 	enabledByDefault = false,
 	description = "Cleans herbs for you",
-	tags = {"Clean", "Herb", "Bot"},
-	type = PluginType.SKILLING
+	tags = {"Clean", "Herb", "Bot"}
 )
 @Slf4j
 public class HerbCleanerPlugin extends Plugin {

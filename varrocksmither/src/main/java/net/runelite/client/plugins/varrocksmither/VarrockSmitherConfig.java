@@ -31,23 +31,25 @@ import net.runelite.client.config.ConfigGroup;
 import net.runelite.client.config.ConfigItem;
 import net.runelite.client.config.ConfigSection;
 import net.runelite.client.config.Range;
-import net.runelite.client.config.ConfigTitleSection;
+
 
 @ConfigGroup("VarrockSmither")
 public interface VarrockSmitherConfig extends Config
 {
-	@ConfigTitleSection(
+	@ConfigSection(
 			keyName = "instructionsTitle",
 			name = "BAR ID's:",
 			description = "",
 			position = 1
 	)
+	String instructionsTitle = "instructionsTitle";
+
 	@ConfigItem(
 			keyName = "instructions",
 			name = "",
 			description = "Instructions. Don't enter anything into this field",
 			position = 2,
-			titleSection = "instructionsTitle"
+			section = "instructionsTitle"
 	)
 	default String instructions()
 	{
@@ -89,10 +91,8 @@ public interface VarrockSmitherConfig extends Config
 		description = "Configure how the bot handles sleep delays",
 		position = 6
 	)
-	default boolean delayConfig()
-	{
-		return false;
-	}
+	String delayConfig = "delayConfig";
+
 
 	@Range(
 		min = 0,
@@ -176,10 +176,8 @@ public interface VarrockSmitherConfig extends Config
 		description = "Configure how the bot handles game tick delays, 1 game tick equates to roughly 600ms",
 		position = 12
 	)
-	default boolean delayTickConfig()
-	{
-		return false;
-	}
+	String delayTickConfig = "delayTickConfig";
+
 
 	@Range(
 		min = 0,

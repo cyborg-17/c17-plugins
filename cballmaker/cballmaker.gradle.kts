@@ -23,14 +23,14 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-version = "0.0.5"
+version = "1.0.0"
 
 project.extra["PluginName"] = "CballMaker"
 project.extra["PluginDescription"] = "Makes cannonballs in Edgeville for you."
 
 dependencies {
-    compileOnly(project(":iutils"))
-    compileOnly(group = "com.owain.externals", name = "chinbreakhandler", version = "0.0.13+")
+    compileOnly(group = "com.openosrs.externals", name = "iutils", version = "+")
+    compileOnly(group = "com.owain.externals", name = "chinbreakhandler", version = "+")
 }
 
 tasks {

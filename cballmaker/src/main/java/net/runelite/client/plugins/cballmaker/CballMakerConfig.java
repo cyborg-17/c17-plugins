@@ -31,7 +31,6 @@ import net.runelite.client.config.ConfigGroup;
 import net.runelite.client.config.ConfigItem;
 import net.runelite.client.config.ConfigSection;
 import net.runelite.client.config.Range;
-import net.runelite.client.config.ConfigTitleSection;
 
 @ConfigGroup("CballMaker")
 public interface CballMakerConfig extends Config
@@ -49,12 +48,10 @@ public interface CballMakerConfig extends Config
 		keyName = "delayConfig",
 		name = "Sleep Delay Configuration",
 		description = "Configure how the bot handles sleep delays",
-		position = 6
+		position = 6,
+		closedByDefault = true
 	)
-	default boolean delayConfig()
-	{
-		return false;
-	}
+	String delayConfig = "delayConfig";
 
 	@Range(
 		min = 0,
@@ -136,12 +133,10 @@ public interface CballMakerConfig extends Config
 		keyName = "delayTickConfig",
 		name = "Game Tick Configuration",
 		description = "Configure how the bot handles game tick delays, 1 game tick equates to roughly 600ms",
-		position = 12
+		position = 12,
+		closedByDefault = true
 	)
-	default boolean delayTickConfig()
-	{
-		return false;
-	}
+	String delayTickConfig = "delayTickConfig";
 
 	@Range(
 		min = 0,

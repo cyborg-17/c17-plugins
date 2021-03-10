@@ -36,7 +36,7 @@ subprojects {
     group = "com.openosrs.externals"
 
     project.extra["PluginProvider"] = "c17"
-    project.extra["ProjectSupportUrl"] = "https://discord.gg/9fGzEDR"
+    project.extra["ProjectSupportUrl"] = "https://discord.gg/7GES35jADd"
     project.extra["PluginLicense"] = "3-Clause BSD License"
 
     repositories {
@@ -112,7 +112,7 @@ subprojects {
             doLast {
                 copy {
                     from("./build/libs/")
-                    into("D:\\custom plugins\\release")
+                    into("D:\\RunescapeClient\\c17-plugins\\release")
                 }
             }
         }

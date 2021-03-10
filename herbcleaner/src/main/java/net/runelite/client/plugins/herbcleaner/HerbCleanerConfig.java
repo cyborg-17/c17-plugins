@@ -68,10 +68,7 @@ public interface HerbCleanerConfig extends Config
 		description = "Configure how the bot handles sleep delays",
 		position = 5
 	)
-	default boolean delayConfig()
-	{
-		return false;
-	}
+	String delayConfig = "delayConfig";
 
 	@Range(
 		min = 0,
@@ -155,10 +152,7 @@ public interface HerbCleanerConfig extends Config
 		description = "Configure how the bot handles game tick delays, 1 game tick equates to roughly 600ms",
 		position = 11
 	)
-	default boolean delayTickConfig()
-	{
-		return false;
-	}
+	String delayTickConfig = "delayTickConfig";
 
 	@Range(
 		min = 0,

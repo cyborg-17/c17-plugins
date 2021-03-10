@@ -47,7 +47,6 @@ import net.runelite.client.plugins.Plugin;
 import net.runelite.client.plugins.PluginDependency;
 import net.runelite.client.plugins.PluginDescriptor;
 import net.runelite.client.plugins.PluginManager;
-import net.runelite.client.plugins.PluginType;
 import net.runelite.client.plugins.iutils.*;
 import net.runelite.client.ui.overlay.OverlayManager;
 import org.pf4j.Extension;
@@ -61,8 +60,7 @@ import static net.runelite.client.plugins.varrocksmither.VarrockSmitherState.*;
 	name = "c17 - VarrockSmither",
 	enabledByDefault = false,
 	description = "Smithing in varrock for you",
-	tags = {"Smithing", "skill", "bot",},
-	type = PluginType.SKILLING
+	tags = {"Smithing", "skill", "bot",}
 )
 @Slf4j
 public class VarrockSmitherPlugin extends Plugin {
@@ -243,7 +241,7 @@ public class VarrockSmitherPlugin extends Plugin {
 			Widget smithingwidgetitem = client.getWidget(selectedItem.getItem());
 			if (smithingwidgetitem != null) {
 				targetMenu = new MenuEntry("", "",
-						1, MenuOpcode.CC_OP.getId(), -1, selectedItem.getItem().getId(), false);
+						1, MenuAction.CC_OP.getId(), -1, selectedItem.getItem().getId(), false);
 				menu.setEntry(targetMenu);
 				mouse.delayMouseClick(smithingwidgetitem.getBounds(), sleepDelay());
 			}
@@ -261,7 +259,7 @@ public class VarrockSmitherPlugin extends Plugin {
 		if (npc != null)
 		{
 			targetMenu = new MenuEntry("", "",
-					bankNPC.getIndex(), MenuOpcode.NPC_THIRD_OPTION.getId(), 0, 0, false);
+					bankNPC.getIndex(), MenuAction.NPC_THIRD_OPTION.getId(), 0, 0, false);
 			menu.setEntry(targetMenu);
 			mouse.delayMouseClick(bankNPC.getConvexHull().getBounds(), sleepDelay());
 		}
@@ -417,7 +415,7 @@ public class VarrockSmitherPlugin extends Plugin {
 					break;
 				case SMITHING:
 					anvil = object.findNearestGameObject(2097);
-					targetMenu = new MenuEntry("", "", anvil.getId(), MenuOpcode.GAME_OBJECT_FIRST_OPTION.getId(),
+					targetMenu = new MenuEntry("", "", anvil.getId(), MenuAction.GAME_OBJECT_FIRST_OPTION.getId(),
 							anvil.getSceneMinLocation().getX(), anvil.getSceneMinLocation().getY(), false);
 					menu.setEntry(targetMenu);
 					mouse.delayMouseClick(anvil.getConvexHull().getBounds(), sleepDelay());

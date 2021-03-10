@@ -45,7 +45,6 @@ import net.runelite.client.plugins.Plugin;
 import net.runelite.client.plugins.PluginDependency;
 import net.runelite.client.plugins.PluginDescriptor;
 import net.runelite.client.plugins.PluginManager;
-import net.runelite.client.plugins.PluginType;
 import net.runelite.client.plugins.iutils.*;
 import net.runelite.client.ui.overlay.OverlayManager;
 import org.pf4j.Extension;
@@ -59,8 +58,7 @@ import static net.runelite.client.plugins.cballmaker.CballMakerState.*;
 	name = "c17 - CballMaker",
 	enabledByDefault = false,
 	description = "Makes cannonballs in Edgeville for you.",
-	tags = {"Smithing", "skill", "bot",},
-	type = PluginType.SKILLING
+	tags = {"Smithing", "skill", "bot",}
 )
 @Slf4j
 public class CballMakerPlugin extends Plugin {
@@ -217,7 +215,7 @@ public class CballMakerPlugin extends Plugin {
 		Widget cballwidget = client.getWidget(WidgetInfo.MULTI_SKILL_MENU);
 		if (cballwidget != null)
 		{
-			targetMenu = new MenuEntry("","", 1 , MenuOpcode.CC_OP.getId(),
+			targetMenu = new MenuEntry("","", 1 , MenuAction.CC_OP.getId(),
 					-1, 17694734,false);
 			menu.setEntry(targetMenu);
 			mouse.delayClickRandomPointCenter(-200, 200, sleepDelay());
@@ -236,7 +234,7 @@ public class CballMakerPlugin extends Plugin {
 		GameObject furnace = object.findNearestGameObject(ObjectID.FURNACE_16469);
 		if (furnace !=null)
 		{
-			targetMenu = new MenuEntry("","", furnace.getId(), MenuOpcode.GAME_OBJECT_SECOND_OPTION.getId(),
+			targetMenu = new MenuEntry("","", furnace.getId(), MenuAction.GAME_OBJECT_SECOND_OPTION.getId(),
 					furnace.getLocalLocation().getSceneX(), furnace.getLocalLocation().getSceneY(),false);
 			menu.setEntry(targetMenu);
 			mouse.delayMouseClick(furnace.getConvexHull().getBounds(),sleepDelay());
@@ -254,7 +252,7 @@ public class CballMakerPlugin extends Plugin {
 		if (npc != null)
 		{
 			targetMenu = new MenuEntry("", "",
-					bankNPC.getIndex(), MenuOpcode.NPC_THIRD_OPTION.getId(), 0, 0, false);
+					bankNPC.getIndex(), MenuAction.NPC_THIRD_OPTION.getId(), 0, 0, false);
 			menu.setEntry(targetMenu);
 			mouse.delayMouseClick(bankNPC.getConvexHull().getBounds(), sleepDelay());
 		}

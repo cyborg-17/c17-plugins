@@ -29,7 +29,7 @@ rootProject.name = "c17 Plugins"
 include(":herbcleaner")
 include(":varrocksmither")
 include(":cballmaker")
-include(":iutils")
+//include(":iutils")
 
 for (project in rootProject.children) {
     project.apply {
